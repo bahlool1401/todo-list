@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="css/fontello.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: linear-gradient(to right, #D4D3DD, #EFEFBB);
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+        }
+        main {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .todo {
+            width: 500px;
+            margin-top: 5px;
+            background-color: white;
+            position: relative;
+            display: flex;
+            justify-content: start;
+            flex-direction: column;
+        }
+        .time {
+            width: 100%;
+            height: 70px;
+            background-color: #ffc933;
+            font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+            font-weight: normal;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+        }
+        .todo>h2 {
+            font-family: Arial, Helvetica, sans-serif;
+            letter-spacing: 2px;
+            font-weight: bolder;
+            font-size: 35px;
+            text-align: center;
+            padding: 20px 0;
+        }
+        .todo>.input-box {
+            position: relative;
+        }
+        .todo>.input-box>input {
+            margin: 0 1rem;
+            width: 90%;
+            height: 40px;
+            outline: none;
+            padding-left: 10px;
+        }
+        .todo>.input-box>i {
+            color: #ff3333;
+            font-size: 25px;
+            cursor: pointer;
+            position: absolute;
+            right: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: .5s;
+        }
+        .todo>.input-box>i:hover {
+            color: rgb(29, 2, 2);
+        }
+        .blackboard {
+            margin-top: 10px;
+            width: 100%;
+            border: 10px solid white;
+        }
+        .blackboard>ul {
+            padding: 22px;
+            background-image: url('img/1.jpg');
+            background-size: cover;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            width: 100%;
+            height: 300px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .blackboard>ul>li {
+            list-style-type: none;
+            position: relative;
+            width: 170px;
+            height: 100px;
+            padding: 30px;
+            padding-top: 40px;
+            background: #ffff66;
+            overflow: hidden;
+            overflow-wrap: break-word;
+            margin: 1rem;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .del>span {
+            margin-left: 5px;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+        }
+        .del>span:nth-child(1) {
+            color: rgb(205, 23, 225);
+        }
+        .del>span:nth-child(2) {
+            right: 45px;
+            color: red;
+        }
+        .del>span:nth-child(3) {
+            right: 25px;
+        }
+        .del>span:hover {
+            color: rgb(51, 58, 176);
+        }
+        .blackboard>button {
+            width: calc(100% - 10px);
+            background-color: #ffc933;
+            font-size: 24px;
+            cursor: pointer;
+            font-weight: bolder;
+            margin: 0 5px;
+            margin-top: 12px;
+            padding: 14px;
+            border: none;
+            outline: none;
+            transition: 0.4s;
+            color: white;
+        }
+        .blackboard>button:hover {
+            background-color: #ffc933c5;
+        }
+        main>.todo>button {
+            width: calc(100% - 20px);
+            background-color: #ff3333;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 14px;
+            border: none;
+            outline: none;
+            transition: 0.4s;
+            color: white;
+            margin: 10px;
+        }
+        #chn {
+            display: none;
+        }
+        .togglestyle {
+            text-decoration: line-through;
+            color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="todo">
+            <div class="time">
+                <span id="hours">00</span>
+                <span>:</span>
+                <span id="minutes">00</span>
+                <span>:</span>
+                <span id="seconds">00</span>
+                <span id="session">AM</span>
+            </div>
+            <h2>Your List For today <i class="demo-icon icon-pencil-squared plus"></i> </h2>
+            <div class="input-box">
+                <input id="intVal" placeholder="What to do now?" type="text"><i onclick="_add()"
+                    class="demo-icon icon-plus-circle"></i>
+            </div>
+            <button onclick="chn()" id="chn">change</button>
+            <div class="blackboard">
+                <ul class="paper">
+                    <li onclick="_select(this)">
+                        <strong>make your dream come true</strong>
+                        <div class="del">
+                            <span onclick="_edit(this)"><i class="demo-icon icon-edit"></i></span>
+                            <span onclick="_delete(this)"><i class="demo-icon icon-trash-empty"></i></span>
+                            <span onclick="_pin(this)"><i class="demo-icon icon-pin-outline togglestyle"></i></span>
+                        </div>
+                    </li>
+                </ul>
+                <button onclick="_all()">DELETE ALL</button>
+            </div>
+        </div>
+    </main>
+</body>
+<script>
+    function _time() {
+        let dateTime = new Date()
+        let hours = dateTime.getHours()
+        let minutes = dateTime.getMinutes()
+        let seconds = dateTime.getSeconds()
+        let session = document.getElementById('session')
+        if (hours >= 12) {
+            session.innerHTML = 'PM'
+        } else {
+            session.innerHTML = 'AM'
+        }
+        if (hours > 12) {
+            hours -= 12
+        }
+        document.getElementById('hours').innerHTML = hours
+        document.getElementById('minutes').innerHTML = minutes
+        document.getElementById('seconds').innerHTML = seconds
+    }
+    setInterval(_time, 10)
+    let flag
+    function _add() {
+        let temp = document.getElementById('intVal').value
+        if (temp.length > 2) {
+            let x = document.createElement('li')
+            x.setAttribute('onclick', '_select(this)')
+            x.innerHTML = '<strong>' + temp + '</strong><div class="del"><span onclick="_edit(this)"><i class="demo-icon icon-edit"></i></span><span onclick="_delete(this)"><i class="demo-icon icon-trash-empty"></i></span><span onclick="_pin(this)"><i class="demo-icon icon-pin-outline togglestyle"></i></span></div>'
+            document.querySelector('.todo>.blackboard>ul').appendChild(x)
+            document.getElementById('intVal').value = null
+        } else {
+            alert('please enter at least 3 characters')
+        }
+        document.getElementById('intVal').focus()
+    }
+    function _delete(self) {
+        let uservalue = confirm('Are you sure ?')
+        if (uservalue == true) {
+            self.parentElement.parentElement.remove()
+        } else {
+            document.querySelector('.todo>.blackboard>ul')
+        }
+    }
+    function _edit(self) {
+        flag = self
+        document.getElementById('chn').style.display = 'block'
+        let para = self.parentElement.previousElementSibling.innerHTML
+        document.getElementById('intVal').value = para
+    }
+    function chn() {
+        flag.parentElement.previousElementSibling.innerHTML = document.getElementById('intVal').value
+        document.getElementById('intVal').focus()
+        document.getElementById('chn').style.display = 'none'
+        document.getElementById('intVal').value = null
+        document.getElementById('intVal').focus()
+    }
+    function _select(self) {
+    }
+    function _pin(self) {
+        let x = self.parentElement.previousElementSibling.classList.toggle('togglestyle')
+    }
+    function _all() {
+        let uservalue = confirm('Are you sure ?')
+        if (uservalue == true) {
+            let x = document.querySelector('ul')
+            x.innerHTML = ''
+        } else {
+            document.querySelector('.todo>.blackboard>ul')
+        }
+    }
+</script>
+
+</html>
+</strong>
